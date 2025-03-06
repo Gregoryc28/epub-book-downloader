@@ -166,13 +166,13 @@ def viewCurrentKindleEmail():
 
 def helpMessage():
 	# Print a help message to the user
-	print("Commands:")
-	print("download - Download a book")
-	print("send - Send a book to your kindle")
-	print("config - Configure your kindle email")
-	print("view - View your current kindle email")
-	print("help - Show this help message")
-	print("exit - Exit the program")
+	print("\n\033[1mCommands:\033[0m")
+	print("\033[94mdownload\033[0m - Download a book")
+	print("\033[94msend\033[0m - Send a book to your kindle")
+	print("\033[94mconfig\033[0m - Configure your kindle email")
+	print("\033[94mview\033[0m - View your current kindle email")
+	print("\033[94mhelp\033[0m - Show this help message")
+	print("\033[94mexit\033[0m - Exit the program")
 
 def main():
 	# Print a welcome message to the user
