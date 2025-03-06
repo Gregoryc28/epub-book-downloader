@@ -18,7 +18,7 @@ A Python script to search, download ePub books from Anna's Archive API, and opti
 - Gmail account with App Password for SMTP
 
 ## Setup
-1. Clone the repository: `git clone [repository-url]` then `cd book-downloader`
+1. Clone the repository: `git clone [repository-url]` then `cd epub-book-downloader`
 2. Install dependencies from the requirements file: `pip install -r requirements.txt`
 3. Configure credentials:
    - Set environment variables or modify config for *(in config.py)*:
