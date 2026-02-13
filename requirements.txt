@@ -1,4 +1,4 @@
 requests~=2.32.3
-EbookLib
+ebooklib
 beautifulsoup4
-remotezip
+lxml
