@@ -27,7 +27,7 @@ A Python script to search, download ePub books from Anna's Archive API, and opti
      - [RapidAPI key and headers](https://rapidapi.com/tribestick-tribestick-default/api/annas-archive-api)
 
 ## Usage
-To use the Book Downloader, run the script with `python book_downloader.py`. Once started, you'll see a welcome message and available commands. Enter `download` to search for and download a book by typing its title when prompted, then select from the top 5 results. Use `send` to download a book and send it to your Kindle in one step. Type `config` to set or update your Kindle email address, or `view` to see the currently configured Kindle email. For a list of commands at any time, enter `help`. To quit the program, type `exit`.
+To use the Book Downloader, run the script with `python book_downloader.py`. Once started, you'll see a welcome message and available commands. Enter `download` to search for and download a book by typing its title when prompted, then select from the top 5 results. Use `downloadadd` to download an EPUB and inject synthetic page markers while keeping the file locally for Calibre import. Use `send` to download a book and send it to your Kindle in one step. Type `config` to set or update your Kindle email address, or `view` to see the currently configured Kindle email. For a list of commands at any time, enter `help`. To quit the program, type `exit`.
 
 ## Configuration
 Kindle email is stored in `config.json`, created via the `config` command.
