@@ -124,6 +124,8 @@ def downloadBook():
 
     choice = int(input("Which book would you like to download? "))
     md5 = books['books'][choice-1]['md5']
+    choice = int(input("Which book would you like to download? "))
+    md5 = books['books'][choice-1]['md5']
 
     downloadLink = fetch_download_link(md5)
     if not downloadLink:
@@ -138,6 +140,114 @@ def downloadBook():
     print("\033[92mDownload successful!\033[0m")
     print(f"Book downloaded to {title}.epub")
     print(f"Located at: {os.getcwd()}/{title}.epub")
+    print("\033[92mDownload successful!\033[0m")
+    print(f"Book downloaded to {title}.epub")
+    print(f"Located at: {os.getcwd()}/{title}.epub")
+
+    return title
+    return title
+
+def downloadBookPDF():
+    title = input("What book would you like to download? ")
+
+    querystring = {"q": title, "ext": "pdf", "sort": "mostRelevant", "source": "libgenLi, libgenRs"}
+    url = "https://annas-archive-api.p.rapidapi.com/search"
+
+    try:
+        response = requests.get(url, headers=headers, params=querystring)
+        if response.status_code != 200:
+            print(f"Error: API request failed with status code {response.status_code}")
+            print(f"Response: {response.text}")
+            return
+    except Exception as e:
+        if "429" in str(e):
+            print("Error: API limit reached. Please try again later.")
+        else:
+            print(f"Error: {e}")
+        return
+
+    try:
+        books = response.json()
+    except json.JSONDecodeError:
+        print("Error: Search API returned invalid JSON.")
+        print(f"Raw response: {response.text}")
+        return
+
+    if not books.get('books'):
+        print("\033[91mNo books found for that title.\033[0m")
+        return
+
+    try:
+        for i in range(min(5, len(books['books']))):
+            print(f"{i+1}. {books['books'][i]['title']} by {books['books'][i]['author']}; size: {books['books'][i]['size']}")
+    except Exception as e:
+        print(f"An error occurred while displaying books: {e}")
+        return
+
+    try:
+        choice = int(input("Which book would you like to download? "))
+        md5 = books['books'][choice-1]['md5']
+    except (ValueError, IndexError):
+        print("\033[91mInvalid selection.\033[0m")
+        return
+
+    url = f"https://annas-archive-api.p.rapidapi.com/download"
+    querystring = {"md5": md5}
+    
+    print("Fetching download link...")
+    try:
+        response = requests.get(url, headers=headers, params=querystring)
+        
+        if response.status_code != 200:
+            print(f"\033[91mError: Download API failed (Status: {response.status_code})\033[0m")
+            print(f"Server Message: {response.text}")
+            return
+            
+        if not response.text.strip():
+            print("\033[91mError: API returned an empty response.\033[0m")
+            return
+
+        data = response.json()
+        
+        if not data or not isinstance(data, list) or len(data) == 0:
+            print("\033[91mError: No download link found in API response.\033[0m")
+            return
+            
+        downloadLink = data[0]
+
+    except json.JSONDecodeError:
+        print(f"\033[91mError: Could not parse JSON from download API.\033[0m")
+        print(f"Raw Response: {response.text}")
+        return
+    except Exception as e:
+        print(f"Error: {e}")
+        return
+
+    title = title.rstrip()
+    print(f"Downloading {title}...")
+
+    try:
+        with requests.get(downloadLink, stream=True, headers=headers, timeout=60) as file_response:
+            file_response.raise_for_status() 
+            total_size = int(file_response.headers.get('content-length', 0))
+            
+            with open(f"{title}.pdf", "wb") as f:
+                downloaded = 0
+                for chunk in file_response.iter_content(chunk_size=8192): 
+                    f.write(chunk)
+                    downloaded += len(chunk)
+                    if total_size > 0:
+                        percent = int((downloaded / total_size) * 100)
+                        print(f"Progress: {percent}%", end='\r')
+
+        print("\n\033[92mDownload successful!\033[0m")
+
+    except Exception as e:
+        print(f"\nError writing file: {e}")
+        return
+
+    print(f"Book downloaded to {title}.pdf")
+    print(f"Located at: {os.getcwd()}/{title}.pdf")
 
     return title
 
@@ -247,7 +357,13 @@ def downloadBookPDF():
 
 def storeKindleEmailInConfig():
     kindleEmail = input("What is your kindle email? ")
+    kindleEmail = input("What is your kindle email? ")
 
+    if os.path.exists("config.json"):
+        with open("config.json", "r") as f:
+            data = json.load(f)
+    else:
+        data = {}
     if os.path.exists("config.json"):
         with open("config.json", "r") as f:
             data = json.load(f)
@@ -255,15 +371,29 @@ def storeKindleEmailInConfig():
         data = {}
 
     data["kindleEmail"] = kindleEmail
+    data["kindleEmail"] = kindleEmail
 
+    with open("config.json", "w") as f:
+        json.dump(data, f)
     with open("config.json", "w") as f:
         json.dump(data, f)
 
     print("\033[92mKindle email saved!\033[0m")
+    print("\033[92mKindle email saved!\033[0m")
 
 def downloadAndSendToKindle():
     title = downloadBook()
+    title = downloadBook()
 
+    if os.path.exists("config.json"):
+        with open("config.json", "r") as f:
+            data = json.load(f)
+            if "kindleEmail" in data:
+                kindleEmail = data["kindleEmail"]
+            else:
+                storeKindleEmailInConfig()
+    else:
+        storeKindleEmailInConfig()
     if os.path.exists("config.json"):
         with open("config.json", "r") as f:
             data = json.load(f)
